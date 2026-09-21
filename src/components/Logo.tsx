@@ -15,7 +15,7 @@ export default function Logo({ size = 38, dark = false, letters = true }: LogoPr
   const cell = (size - gap) / 2;
   const ink = dark ? "#F4F3F1" : "#1A1917";
   const paper = dark ? "#1A1917" : "#F4F3F1";
-  const mute = dark ? "#403C37" : "#DDD9D2";
+  const mute = dark ? "#211E3D" : "#DDD9D2";
   const glyph = letters && size >= 20;
 
   const filledBg = hovered ? mute : ink;

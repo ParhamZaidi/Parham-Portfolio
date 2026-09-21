@@ -42,7 +42,7 @@ export default function Navigation({ showBack = false }: NavigationProps) {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         )}
-        <Logo size={38} dark />
+        <Logo size={46} dark />
       </Link>
 
       <div className="flex items-center gap-8 md:gap-11">

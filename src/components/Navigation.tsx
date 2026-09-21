@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Logo from "@/components/Logo";
 
 interface NavigationProps {
   showBack?: boolean;
@@ -20,27 +21,32 @@ export default function Navigation({ showBack = false }: NavigationProps) {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="relative z-20 flex items-center justify-between px-8 md:px-16 py-8"
     >
-      <Link
-        id="site-logo"
-        href="/"
-        className="flex items-center gap-2.5 text-[15px] font-medium tracking-[1.5px] text-white/90 hover:text-white transition-colors"
-      >
-        {showBack && (
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        )}
-        PARHAM AILIA
-      </Link>
+      <div className="flex items-center gap-3.5">
+        <Link href="/" aria-label="Parham Ailia — home">
+          <Logo size={38} dark />
+        </Link>
+        <Link
+          id="site-logo"
+          href="/"
+          className="flex items-center gap-2.5 text-[15px] font-medium tracking-[1.5px] text-white/90 hover:text-white transition-colors"
+        >
+          {showBack && (
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          )}
+          PARHAM AILIA
+        </Link>
+      </div>
 
       <div className="flex items-center gap-8 md:gap-11">
         <Link

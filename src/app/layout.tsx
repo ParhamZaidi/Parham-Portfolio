@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import PlaygroundTools from "@/components/PlaygroundTools";
 
 export const metadata: Metadata = {
   title: "Parham Ailia — Product Designer",
@@ -14,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <PlaygroundTools>{children}</PlaygroundTools>
+      </body>
     </html>
   );
 }

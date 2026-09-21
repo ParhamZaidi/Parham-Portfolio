@@ -21,6 +21,7 @@ export default function Navigation({ showBack = false }: NavigationProps) {
       className="relative z-20 flex items-center justify-between px-8 md:px-16 py-8"
     >
       <Link
+        id="site-logo"
         href="/"
         className="flex items-center gap-2.5 text-[15px] font-medium tracking-[1.5px] text-white/90 hover:text-white transition-colors"
       >

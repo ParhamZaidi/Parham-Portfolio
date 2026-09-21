@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { FaPaintBrush, FaFillDrip, FaSearchPlus } from "react-icons/fa";
+import { FaPaintBrush, FaFillDrip, FaSearchPlus, FaHome } from "react-icons/fa";
 
 type Tool = "brush" | "color" | "zoom" | null;
 
@@ -292,6 +292,18 @@ export default function PlaygroundTools({
               </button>
             );
           })}
+          {activeTool && (
+            <>
+              <div className="h-px bg-white/10 mx-1" />
+              <button
+                onClick={handleLogoReset}
+                aria-label="Reset tools and go home"
+                className="w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all bg-white/[0.03] border-white/10 text-white/50 hover:text-white hover:border-white/20"
+              >
+                <FaHome size={16} />
+              </button>
+            </>
+          )}
         </div>
 
         {showColorPicker && (

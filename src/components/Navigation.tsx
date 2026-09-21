@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/Logo";
+import TypewriterText from "@/components/TypewriterText";
 
 interface NavigationProps {
   showBack?: boolean;
@@ -13,6 +15,7 @@ export default function Navigation({ showBack = false }: NavigationProps) {
   const pathname = usePathname();
   const isAbout = pathname === "/about";
   const isContact = pathname === "/contact";
+  const [logoHovered, setLogoHovered] = useState(false);
 
   return (
     <motion.nav
@@ -25,7 +28,9 @@ export default function Navigation({ showBack = false }: NavigationProps) {
         id="site-logo"
         href="/"
         aria-label="Parham Ailia — home"
-        className="flex items-center gap-3"
+        className="relative flex items-center gap-3"
+        onMouseEnter={() => setLogoHovered(true)}
+        onMouseLeave={() => setLogoHovered(false)}
       >
         {showBack && (
           <svg
@@ -42,7 +47,12 @@ export default function Navigation({ showBack = false }: NavigationProps) {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         )}
-        <Logo size={46} dark />
+        <Logo size={46} dark hovered={logoHovered} />
+        <TypewriterText
+          text="PARHAM AILIA"
+          active={logoHovered}
+          className="absolute left-full top-1/2 -translate-y-1/2 ml-3 whitespace-nowrap text-[15px] font-medium tracking-[1.5px] text-white/90"
+        />
       </Link>
 
       <div className="flex items-center gap-8 md:gap-11">

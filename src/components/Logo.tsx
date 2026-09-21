@@ -1,16 +1,18 @@
-"use client";
-
-import { useState, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
 interface LogoProps {
   size?: number;
   dark?: boolean;
   letters?: boolean;
+  hovered?: boolean;
 }
 
-export default function Logo({ size = 38, dark = false, letters = true }: LogoProps) {
-  const [hovered, setHovered] = useState(false);
-
+export default function Logo({
+  size = 38,
+  dark = false,
+  letters = true,
+  hovered = false,
+}: LogoProps) {
   const gap = Math.max(1, size / 22);
   const cell = (size - gap) / 2;
   const ink = dark ? "#F4F3F1" : "#1A1917";
@@ -47,13 +49,7 @@ export default function Logo({ size = 38, dark = false, letters = true }: LogoPr
   };
 
   return (
-    <span
-      aria-label="Parham Ailia"
-      role="img"
-      style={grid}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
+    <span aria-label="Parham Ailia" role="img" style={grid}>
       <span style={box}>{glyph ? "P" : ""}</span>
       <span style={emptyCell} />
       <span style={emptyCell} />

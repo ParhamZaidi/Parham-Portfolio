@@ -5,6 +5,7 @@ import Navigation from "@/components/Navigation";
 import AnimatedBackground from "@/components/AnimatedBackground";
 import Carousel from "@/components/Carousel";
 import NameStarBurst from "@/components/NameStarBurst";
+import AskMeAgent from "@/components/AskMeAgent";
 
 export default function Home() {
   return (
@@ -40,6 +41,7 @@ export default function Home() {
         <p className="text-[15px] font-light text-white/35 mt-2.5 tracking-[2px]">
           Product Designer
         </p>
+        <AskMeAgent />
       </motion.section>
 
       {/* Carousel */}

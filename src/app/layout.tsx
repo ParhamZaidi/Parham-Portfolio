@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import PlaygroundTools from "@/components/PlaygroundTools";
+import IntroLoader from "@/components/IntroLoader";
 
 export const metadata: Metadata = {
   title: "Parham Ailia — Product Designer",
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <PlaygroundTools>{children}</PlaygroundTools>
+        <IntroLoader />
       </body>
     </html>
   );

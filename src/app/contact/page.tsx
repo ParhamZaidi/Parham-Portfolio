@@ -14,6 +14,7 @@ export default function ContactPage() {
       <Navigation />
 
       <motion.div
+        id="page-heading"
         className="relative z-10 flex-1 flex flex-col items-center justify-center text-center max-w-[720px] mx-auto px-8 pb-20"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

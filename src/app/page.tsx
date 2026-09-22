@@ -33,7 +33,10 @@ export default function Home() {
         <p className="text-[13px] font-light tracking-[3px] text-white/35 uppercase mb-3.5">
           Hello, it&apos;s me
         </p>
-        <h1 className="font-display text-5xl md:text-7xl lg:text-[76px] font-bold tracking-tight text-white inline-flex items-center gap-4">
+        <h1
+          id="page-heading"
+          className="font-display text-5xl md:text-7xl lg:text-[76px] font-bold tracking-tight text-white inline-flex items-center gap-4"
+        >
           Parham Ailia
           <NameStarBurst />
         </h1>

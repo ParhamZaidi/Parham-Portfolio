@@ -49,6 +49,7 @@ export default function AboutPage() {
       <div className="relative z-10 max-w-[1120px] mx-auto px-8 md:px-16 pb-32">
         {/* Hero */}
         <motion.section
+          id="page-heading"
           className="flex flex-col md:flex-row gap-14 md:gap-16 items-center pt-8 md:pt-12 pb-20 md:pb-24"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

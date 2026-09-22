@@ -25,6 +25,7 @@ export default function CaseStudyContent({
 
       {/* Hero */}
       <motion.section
+        id="page-heading"
         className="relative z-10 px-8 md:px-40 pt-20 pb-16 max-w-[1120px] mx-auto"
         variants={fadeUp}
         initial="initial"

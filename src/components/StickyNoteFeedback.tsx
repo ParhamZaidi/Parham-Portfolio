@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, type PanInfo } from "framer-motion";
 import { usePathname } from "next/navigation";
 
-// TODO: replace with your own Formspree form endpoint (sign up free at
-// formspree.io, create a form, and paste its endpoint URL here) — notes
-// won't be emailed to you until this is set.
-const FORM_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+const FORM_ENDPOINT = "https://formspree.io/f/xaenopay";
 
 const STORAGE_KEY = "sticky-feedback-notes";
 

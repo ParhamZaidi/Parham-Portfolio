@@ -52,4 +52,3 @@ src/
 - [ ] Replace `[YOUR COMPANY]` placeholders in project data
 - [ ] Add Open Graph / social meta tags
 - [ ] Deploy to Vercel
-- [ ] Sign up for a free Formspree account and replace `FORM_ENDPOINT` in `StickyNoteFeedback.tsx` with your real form endpoint (sticky notes won't be emailed until this is set)

@@ -13,7 +13,7 @@ const LIKED_STORAGE_KEY = "liked-projects";
 
 export default function Carousel() {
   const router = useRouter();
-  const [activeIndex, setActiveIndex] = useState(2);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [likedSlugs, setLikedSlugs] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -42,24 +42,25 @@ export default function Carousel() {
     _event: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
+    const n = projects.length;
     if (
       info.offset.x < -SWIPE_OFFSET_THRESHOLD ||
       info.velocity.x < -SWIPE_VELOCITY_THRESHOLD
     ) {
-      setActiveIndex((i) => Math.min(projects.length - 1, i + 1));
+      setActiveIndex((i) => (i + 1) % n);
     } else if (
       info.offset.x > SWIPE_OFFSET_THRESHOLD ||
       info.velocity.x > SWIPE_VELOCITY_THRESHOLD
     ) {
-      setActiveIndex((i) => Math.max(0, i - 1));
+      setActiveIndex((i) => (i - 1 + n) % n);
     }
   };
 
   return (
     <section id="work" className="relative z-10 mt-14 md:mt-16 pb-16">
       {/* Edge fades */}
-      <div className="absolute left-0 top-0 w-24 md:w-32 h-full bg-gradient-to-r from-[#080808] to-transparent z-[15] pointer-events-none" />
-      <div className="absolute right-0 top-0 w-24 md:w-32 h-full bg-gradient-to-l from-[#080808] to-transparent z-[15] pointer-events-none" />
+      <div className="absolute left-0 top-0 w-24 md:w-32 h-full bg-gradient-to-r from-bg to-transparent z-[15] pointer-events-none" />
+      <div className="absolute right-0 top-0 w-24 md:w-32 h-full bg-gradient-to-l from-bg to-transparent z-[15] pointer-events-none" />
 
       {/* Cards */}
       <motion.div
@@ -70,16 +71,18 @@ export default function Carousel() {
         onDragEnd={handleDragEnd}
       >
         {projects.map((project, i) => {
-          const offset = i - activeIndex;
+          const n = projects.length;
+          let offset = i - activeIndex;
+          if (offset > n / 2) offset -= n;
+          if (offset < -n / 2) offset += n;
           const absOffset = Math.abs(offset);
 
-          if (absOffset > 3) return null;
+          if (absOffset > 1) return null;
 
           const isActive = offset === 0;
-          const tx = offset * 340 + (isActive ? 0 : offset * 40);
+          const tx = offset * 340;
           const scale = isActive ? 1.06 : 0.86;
-          const opacity =
-            absOffset === 0 ? 1 : absOffset === 1 ? 0.7 : absOffset === 2 ? 0.35 : 0;
+          const opacity = isActive ? 1 : 0.45;
           const zIndex = 10 - absOffset;
 
           return (
@@ -116,6 +119,7 @@ export default function Carousel() {
                   }
                 }}
                 className="block w-full text-left cursor-pointer"
+                data-cursor={isActive ? "My work" : undefined}
                 aria-label={
                   isActive ? `Open ${project.title}` : `Select ${project.title}`
                 }
@@ -123,39 +127,47 @@ export default function Carousel() {
                 <div
                   className={`rounded-[20px] overflow-hidden p-5 md:p-6 backdrop-blur-3xl transition-colors duration-300 ${
                     isActive
-                      ? "bg-white/[0.055] border border-white/10"
-                      : "bg-white/[0.025] border border-white/[0.04]"
+                      ? "bg-fg/[0.055] border border-fg/10"
+                      : "bg-fg/[0.025] border border-fg/[0.04]"
                   }`}
                 >
                   {/* Date + Title */}
                   <div className="mb-3.5">
-                    <div className="text-[11px] text-white/30 tracking-[1px] uppercase mb-1.5">
+                    <div className="text-[11px] text-fg/30 tracking-[1px] uppercase mb-1.5">
                       {project.date}
                     </div>
-                    <div className="font-display text-[17px] font-semibold text-white/90 leading-snug">
+                    <div className="font-display text-[17px] font-semibold text-fg/90 leading-snug">
                       {project.title}
                     </div>
                   </div>
 
-                  {/* Preview placeholder */}
-                  <div className="w-full h-[200px] bg-white/[0.03] rounded-[14px] border border-white/[0.05] flex items-center justify-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <svg
-                        width="28"
-                        height="28"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="rgba(255,255,255,0.1)"
-                        strokeWidth="1"
-                      >
-                        <rect x="2" y="3" width="20" height="14" rx="2" />
-                        <path d="M8 21h8" />
-                        <path d="M12 17v4" />
-                      </svg>
-                      <span className="text-[10px] text-white/10 tracking-[1.5px] uppercase">
-                        Project Preview
-                      </span>
-                    </div>
+                  {/* Preview */}
+                  <div className="w-full h-[200px] bg-fg/[0.03] rounded-[14px] border border-fg/[0.05] flex items-center justify-center overflow-hidden">
+                    {project.heroImage ? (
+                      <img
+                        src={project.heroImage}
+                        alt={`${project.title} preview`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <svg
+                          width="28"
+                          height="28"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="rgb(var(--fg) / 0.1)"
+                          strokeWidth="1"
+                        >
+                          <rect x="2" y="3" width="20" height="14" rx="2" />
+                          <path d="M8 21h8" />
+                          <path d="M12 17v4" />
+                        </svg>
+                        <span className="text-[10px] text-fg/10 tracking-[1.5px] uppercase">
+                          Project Preview
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Tools used */}
@@ -169,7 +181,7 @@ export default function Carousel() {
                           key={toolKey}
                           title={tool.label}
                           size={14}
-                          color="rgba(255,255,255,0.35)"
+                          color="rgb(var(--fg) / 0.35)"
                         />
                       );
                     })}
@@ -207,7 +219,7 @@ export default function Carousel() {
                         height="13"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="rgba(255,255,255,0.3)"
+                        stroke="rgb(var(--fg) / 0.3)"
                         strokeWidth="1.5"
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -215,7 +227,7 @@ export default function Carousel() {
                         <path d="M7 17l9.2-9.2" />
                         <path d="M17 17V7H7" />
                       </svg>
-                      <span className="text-[13px] text-white/40">
+                      <span className="text-[13px] text-fg/40">
                         {project.metric} {project.metricLabel}
                       </span>
                     </div>
@@ -239,8 +251,8 @@ export default function Carousel() {
               width: i === activeIndex ? 24 : 6,
               backgroundColor:
                 i === activeIndex
-                  ? "rgba(255,255,255,0.8)"
-                  : "rgba(255,255,255,0.15)",
+                  ? "rgb(var(--fg) / 0.8)"
+                  : "rgb(var(--fg) / 0.15)",
             }}
           />
         ))}

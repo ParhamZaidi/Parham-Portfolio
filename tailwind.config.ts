@@ -9,6 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        fg: "rgb(var(--fg) / <alpha-value>)",
+        bg: "rgb(var(--bg) / <alpha-value>)",
+        elevated: "rgb(var(--elevated) / <alpha-value>)",
         surface: {
           DEFAULT: "#080808",
           card: "rgba(255,255,255,0.04)",
@@ -33,8 +36,13 @@ const config: Config = {
         "drift-3": "drift3 7s ease-in-out infinite",
         "drift-4": "drift4 11s ease-in-out infinite",
         "drift-5": "drift5 9s ease-in-out infinite",
+        marquee: "marquee 16s linear infinite",
       },
       keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
         drift1: {
           "0%, 100%": { transform: "translate(0, 0) scale(1)" },
           "25%": { transform: "translate(220px, -140px) scale(1.2)" },

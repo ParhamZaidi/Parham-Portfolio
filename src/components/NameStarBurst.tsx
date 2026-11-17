@@ -3,16 +3,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PiSparkleFill } from "react-icons/pi";
-import { tools } from "@/data/tools";
 
-const HIDDEN_DURATION = 1000;
-const VISIBLE_DURATION = 2000;
-
-const burstIcons = [
-  { key: "figma", color: "#6366f1", x: -34, y: -46, rotate: -8 },
-  { key: "framer", color: "#a855f7", x: 0, y: -58, rotate: 4 },
-  { key: "notion", color: "#3b82f6", x: 34, y: -46, rotate: 10 },
-];
+const HIDDEN_DURATION = 3000;
+const VISIBLE_DURATION = 5000;
 
 export default function NameStarBurst() {
   const [visible, setVisible] = useState(false);
@@ -37,36 +30,34 @@ export default function NameStarBurst() {
     <span className="relative inline-flex items-center justify-center">
       <PiSparkleFill size={40} color="#8b5cf6" />
       <AnimatePresence>
-        {visible &&
-          burstIcons.map(({ key, color, x, y, rotate }, i) => {
-            const tool = tools[key];
-            if (!tool) return null;
-            const Icon = tool.icon;
-            return (
-              <motion.span
-                key={key}
-                className="absolute flex items-center justify-center w-8 h-8 rounded-full"
-                style={{
-                  left: "50%",
-                  top: "50%",
-                  marginLeft: -16,
-                  marginTop: -16,
-                  backgroundColor: `${color}22`,
-                  border: `1px solid ${color}55`,
-                }}
-                initial={{ opacity: 0, scale: 0.3, x: 0, y: 0, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, x, y, rotate }}
-                exit={{ opacity: 0, scale: 0.3, x: 0, y: 0, rotate: 0 }}
-                transition={{
-                  duration: 0.35,
-                  delay: i * 0.08,
-                  ease: "backOut",
-                }}
-              >
-                <Icon size={16} color={color} />
-              </motion.span>
-            );
-          })}
+        {visible && (
+          <motion.span
+            className="absolute overflow-hidden"
+            style={{
+              left: "50%",
+              top: "50%",
+              width: 79,
+              height: 79,
+              marginLeft: -39.5,
+              marginTop: -39.5,
+              borderRadius: 10,
+              border: "2px solid #FACC15",
+              boxShadow: "0 0 16px rgba(250,204,21,0.35), 0 8px 24px rgba(0,0,0,0.4)",
+              transformOrigin: "15% 100%",
+            }}
+            initial={{ opacity: 0, scale: 0.15, x: 0, y: 0, rotate: -6 }}
+            animate={{ opacity: 1, scale: 1, x: 46, y: -82, rotate: 6 }}
+            exit={{ opacity: 0, scale: 0.15, x: 0, y: 0, rotate: -6 }}
+            transition={{ duration: 0.45, ease: "backOut" }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/headshot.jpg"
+              alt="Parham Ailia"
+              className="w-full h-full object-cover"
+            />
+          </motion.span>
+        )}
       </AnimatePresence>
     </span>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/context/ThemeContext";
 
 const STORAGE_KEY = "intro-seen";
 
@@ -19,9 +20,14 @@ const LOGO_GAP = Math.max(1, LOGO_SIZE / 22);
 const LOGO_CELL = (LOGO_SIZE - LOGO_GAP) / 2;
 const CELL = (LOGO_SIZE - (GRID - 1) * GAP) / GRID;
 
-const INK = "#F4F3F1";
-const MUTE = "#211E3D";
-const TEXT_ON_INK = "#1A1917";
+// Ink/mute/text pairs mirror Logo.tsx's own dark-prop swap, so the
+// resolved glyph matches whichever theme the intro reveals into.
+const NIGHT_INK = "#F4F3F1";
+const NIGHT_MUTE = "#211E3D";
+const NIGHT_TEXT_ON_INK = "#1A1917";
+const DAY_INK = "#1A1917";
+const DAY_MUTE = "#DDD9D2";
+const DAY_TEXT_ON_INK = "#F4F3F1";
 
 // Which screen corner each quadrant's cells fly in from.
 const QUADRANT_ORIGIN: Record<string, { x: number; y: number }> = {
@@ -53,6 +59,12 @@ interface Cell {
 }
 
 export default function IntroLoader() {
+  const { theme } = useTheme();
+  const isDay = theme === "day";
+  const ink = isDay ? DAY_INK : NIGHT_INK;
+  const mute = isDay ? DAY_MUTE : NIGHT_MUTE;
+  const textOnInk = isDay ? DAY_TEXT_ON_INK : NIGHT_TEXT_ON_INK;
+
   const [show, setShow] = useState(true);
   const [phase, setPhase] = useState<Phase>("fly");
 
@@ -73,12 +85,13 @@ export default function IntroLoader() {
           top,
           dx: target.left - left,
           dy: target.top - top,
-          targetColor: target.ink ? INK : MUTE,
+          targetColor: target.ink ? ink : mute,
         });
       }
     }
     return list;
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ink, mute]);
 
   const targetScale = LOGO_CELL / CELL;
 
@@ -106,7 +119,7 @@ export default function IntroLoader() {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[99999] flex items-center justify-center bg-[#080808]"
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-bg"
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
         >
@@ -171,7 +184,7 @@ export default function IntroLoader() {
                 height: LOGO_CELL,
                 fontSize: LOGO_CELL * 0.52,
                 letterSpacing: "-0.04em",
-                color: TEXT_ON_INK,
+                color: textOnInk,
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: showGlyphs ? 1 : 0 }}
@@ -189,7 +202,7 @@ export default function IntroLoader() {
                 height: LOGO_CELL,
                 fontSize: LOGO_CELL * 0.52,
                 letterSpacing: "-0.04em",
-                color: TEXT_ON_INK,
+                color: textOnInk,
               }}
               initial={{ opacity: 0 }}
               animate={{ opacity: showGlyphs ? 1 : 0 }}

@@ -2,10 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,800&family=Caveat:wght@500;600;700&display=swap');
 
 :root {
-  --bg: #080808;
+  /* RGB triplets (no alpha) so Tailwind's fg/bg/elevated utilities can
+     apply their own opacity modifier via rgb(var(--x) / <alpha-value>). */
+  --bg: 8 8 8;
+  --fg: 255 255 255;
+  --elevated: 18 18 18;
+
+  --bg-hex: #080808;
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.55);
   --text-tertiary: rgba(255, 255, 255, 0.35);
@@ -14,21 +20,41 @@
   --surface-border: rgba(255, 255, 255, 0.06);
 }
 
+:root[data-theme="day"] {
+  --bg: 246 243 237;
+  --fg: 10 10 8;
+  --elevated: 255 255 255;
+
+  --bg-hex: #f6f3ed;
+  --text-primary: #0a0a08;
+  --text-secondary: rgba(10, 10, 8, 0.6);
+  --text-tertiary: rgba(10, 10, 8, 0.42);
+  --text-muted: rgba(10, 10, 8, 0.28);
+  --surface-card: rgba(10, 10, 8, 0.035);
+  --surface-border: rgba(10, 10, 8, 0.08);
+}
+
 html {
   scroll-behavior: smooth;
 }
 
+html.custom-cursor-active,
+html.custom-cursor-active * {
+  cursor: none !important;
+}
+
 body {
-  background: var(--bg);
+  background: rgb(var(--bg));
   color: var(--text-primary);
   font-family: 'DM Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
+  background: rgb(var(--fg) / 0.15);
+  color: var(--text-primary);
 }
 
 /* Custom scrollbar */
@@ -39,9 +65,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(var(--fg) / 0.1);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgb(var(--fg) / 0.2);
 }

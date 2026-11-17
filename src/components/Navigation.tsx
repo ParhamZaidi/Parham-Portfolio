@@ -6,6 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/Logo";
 import TypewriterText from "@/components/TypewriterText";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useTheme } from "@/context/ThemeContext";
 
 interface NavigationProps {
   showBack?: boolean;
@@ -16,6 +18,7 @@ export default function Navigation({ showBack = false }: NavigationProps) {
   const isAbout = pathname === "/about";
   const isContact = pathname === "/contact";
   const [logoHovered, setLogoHovered] = useState(false);
+  const { theme } = useTheme();
 
   return (
     <motion.nav
@@ -42,16 +45,16 @@ export default function Navigation({ showBack = false }: NavigationProps) {
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-white/90"
+            className="text-fg/90"
           >
             <path d="M15 18l-6-6 6-6" />
           </svg>
         )}
-        <Logo size={46} dark hovered={logoHovered} />
+        <Logo size={46} dark={theme === "night"} hovered={logoHovered} />
         <TypewriterText
           text="PARHAM AILIA"
           active={logoHovered}
-          className="absolute left-full top-1/2 -translate-y-1/2 ml-3 whitespace-nowrap text-[15px] font-medium tracking-[1.5px] text-white/90"
+          className="absolute left-full top-1/2 -translate-y-1/2 ml-3 whitespace-nowrap text-[15px] font-medium tracking-[1.5px] text-fg/90"
         />
       </Link>
 
@@ -59,7 +62,7 @@ export default function Navigation({ showBack = false }: NavigationProps) {
         <Link
           href="/about"
           className={`text-sm font-normal tracking-wide transition-colors ${
-            isAbout ? "text-white/90" : "text-white/55 hover:text-white/90"
+            isAbout ? "text-fg/90" : "text-fg/55 hover:text-fg/90"
           }`}
         >
           About
@@ -68,12 +71,13 @@ export default function Navigation({ showBack = false }: NavigationProps) {
           href="/contact"
           className={`text-[13px] font-normal tracking-wide px-7 py-2.5 rounded-full transition-all ${
             isContact
-              ? "bg-white/[0.08] border border-white/[0.18] text-white/95"
-              : "border border-white/15 text-white/80 hover:border-white/30 hover:text-white"
+              ? "bg-fg/[0.08] border border-fg/[0.18] text-fg/95"
+              : "border border-fg/15 text-fg/80 hover:border-fg/30 hover:text-fg"
           }`}
         >
           Contact
         </Link>
+        <ThemeToggle />
       </div>
     </motion.nav>
   );

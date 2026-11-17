@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { FaPaintBrush, FaFillDrip, FaSearchPlus, FaHome } from "react-icons/fa";
+import { useTheme } from "@/context/ThemeContext";
 
 type Tool = "brush" | "color" | "zoom" | null;
 
@@ -37,10 +38,10 @@ function isPointInElement(id: string, x: number, y: number) {
   return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
 }
 
-const TOOLS: { id: Exclude<Tool, null>; icon: typeof FaPaintBrush; label: string }[] = [
-  { id: "brush", icon: FaPaintBrush, label: "Brush" },
-  { id: "color", icon: FaFillDrip, label: "Color" },
-  { id: "zoom", icon: FaSearchPlus, label: "Zoom lens" },
+const TOOLS: { id: Exclude<Tool, null>; icon: typeof FaPaintBrush; label: string; cursor: string }[] = [
+  { id: "brush", icon: FaPaintBrush, label: "Brush", cursor: "It's brush" },
+  { id: "color", icon: FaFillDrip, label: "Color", cursor: "It's color" },
+  { id: "zoom", icon: FaSearchPlus, label: "Zoom lens", cursor: "It's zoom" },
 ];
 
 export default function PlaygroundTools({
@@ -50,6 +51,7 @@ export default function PlaygroundTools({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { theme } = useTheme();
 
   const [activeTool, setActiveTool] = useState<Tool>(null);
   const [zoomStyle, setZoomStyle] = useState<ZoomStyle>(REST_ZOOM);
@@ -102,8 +104,13 @@ export default function PlaygroundTools({
     return () => window.removeEventListener("resize", resize);
   }, []);
 
-  // Continuously fade the canvas back to transparent so brush/color marks
-  // never linger indefinitely, even after switching tools.
+  // Fade the canvas back to transparent so brush/color marks never linger.
+  // This only needs to run while a tool is active, plus a short tail after
+  // deactivation to finish fading out existing marks — not forever, since
+  // an always-on full-viewport fillRect every frame is wasted work (and was
+  // the actual source of page-wide jank, including the custom cursor feeling
+  // laggy) on every page view regardless of whether the canvas had anything
+  // on it at all.
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
@@ -116,7 +123,33 @@ export default function PlaygroundTools({
       ctx.globalCompositeOperation = "source-over";
       rafRef.current = requestAnimationFrame(loop);
     };
-    rafRef.current = requestAnimationFrame(loop);
+
+    const ensureRunning = () => {
+      if (rafRef.current === null) rafRef.current = requestAnimationFrame(loop);
+    };
+    const stopAndClear = () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      clearCanvas();
+    };
+
+    let tailTimeout: ReturnType<typeof setTimeout> | null = null;
+    if (activeTool) {
+      ensureRunning();
+    } else {
+      ensureRunning();
+      tailTimeout = setTimeout(stopAndClear, 2000);
+    }
+
+    return () => {
+      if (tailTimeout) clearTimeout(tailTimeout);
+    };
+  }, [activeTool, clearCanvas]);
+
+  // Safety net: cancel the fade loop if this component ever truly unmounts.
+  useEffect(() => {
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
@@ -257,11 +290,11 @@ export default function PlaygroundTools({
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
-          style={{ mixBlendMode: "screen" }}
+          style={{ mixBlendMode: theme === "day" ? "multiply" : "screen" }}
         />
         {dragRect && (
           <div
-            className="absolute border border-white/50 bg-white/10 rounded-sm"
+            className="absolute border border-fg/50 bg-fg/10 rounded-sm"
             style={{
               left: dragRect.x,
               top: dragRect.y,
@@ -272,9 +305,12 @@ export default function PlaygroundTools({
         )}
       </div>
 
-      <div className="fixed left-4 md:left-6 top-1/2 -translate-y-1/2 z-[9999] flex items-center gap-3">
+      {/* Anchored below the nav (top-28) instead of vertically centered —
+          see the matching comment in SideDock.tsx for why centering was
+          wrong on shorter viewports. */}
+      <div className="fixed right-4 md:right-6 top-28 z-[9999] flex flex-row-reverse items-center gap-3">
         <div className="flex flex-col gap-3">
-          {TOOLS.map(({ id, icon: Icon, label }) => {
+          {TOOLS.map(({ id, icon: Icon, label, cursor }) => {
             const isActive = activeTool === id;
             return (
               <button
@@ -282,10 +318,11 @@ export default function PlaygroundTools({
                 onClick={() => handleToggle(id)}
                 aria-label={isActive ? `Deselect ${label}` : `Select ${label}`}
                 aria-pressed={isActive}
+                data-cursor={cursor}
                 className={`w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all ${
                   isActive
-                    ? "bg-white/[0.12] border-white/30 text-white"
-                    : "bg-white/[0.03] border-white/10 text-white/50 hover:text-white hover:border-white/20"
+                    ? "bg-fg/[0.12] border-fg/30 text-fg"
+                    : "bg-fg/[0.03] border-fg/10 text-fg/50 hover:text-fg hover:border-fg/20"
                 }`}
               >
                 <Icon size={16} />
@@ -294,11 +331,11 @@ export default function PlaygroundTools({
           })}
           {activeTool && (
             <>
-              <div className="h-px bg-white/10 mx-1" />
+              <div className="h-px bg-fg/10 mx-1" />
               <button
                 onClick={handleLogoReset}
                 aria-label="Reset tools and go home"
-                className="w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all bg-white/[0.03] border-white/10 text-white/50 hover:text-white hover:border-white/20"
+                className="w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all bg-fg/[0.03] border-fg/10 text-fg/50 hover:text-fg hover:border-fg/20"
               >
                 <FaHome size={16} />
               </button>
@@ -307,7 +344,7 @@ export default function PlaygroundTools({
         </div>
 
         {showColorPicker && (
-          <div className="flex flex-col gap-2 p-2 rounded-2xl bg-white/[0.05] border border-white/10 backdrop-blur-xl">
+          <div className="flex flex-col gap-2 p-2 rounded-2xl bg-fg/[0.05] border border-fg/10 backdrop-blur-xl">
             {PALETTE.map((color) => (
               <button
                 key={color}
@@ -316,8 +353,8 @@ export default function PlaygroundTools({
                 aria-pressed={selectedColor === color}
                 className={`w-7 h-7 rounded-full transition-all ${
                   selectedColor === color
-                    ? "ring-2 ring-white ring-offset-2 ring-offset-[#080808]"
-                    : "border border-white/20 hover:scale-110"
+                    ? "ring-2 ring-fg ring-offset-2 ring-offset-bg"
+                    : "border border-fg/20 hover:scale-110"
                 }`}
                 style={{ backgroundColor: color }}
               />

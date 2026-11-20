@@ -189,12 +189,11 @@ export default function PamiotPage() {
     });
   };
 
-  // Plays Pamiot's real voice — Gemini's own text-to-speech, decoded from
-  // raw PCM into a Web Audio buffer and played directly, no <audio> tag
-  // or container format needed. The caption reveal is timed against the
-  // clip's actual duration so the two stay in sync. Returns false if the
-  // API isn't configured or the request fails, so the caller can fall
-  // back to the browser's built-in voice instead.
+  // Plays Pamiot's real voice — Gemini's own text-to-speech — decoded into
+  // a Web Audio buffer and played directly, no <audio> tag needed. The
+  // caption reveal is timed against the clip's actual duration so the two
+  // stay in sync. Returns false if the API isn't configured or the request
+  // fails, so the caller can fall back to the browser's built-in voice.
   const revealWithGeminiVoice = async (answer: string): Promise<boolean> => {
     try {
       const res = await fetch("/api/pamiot/speech", {
@@ -211,13 +210,21 @@ export default function PamiotPage() {
       const binary = atob(data.audio as string);
       const bytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-      const pcm16 = new Int16Array(bytes.buffer);
-      const float32 = new Float32Array(pcm16.length);
-      for (let i = 0; i < pcm16.length; i++) float32[i] = pcm16[i] / 32768;
 
-      const sampleRate: number = data.sampleRate || 24000;
-      const buffer = audioCtx.createBuffer(1, float32.length, sampleRate);
-      buffer.copyToChannel(float32, 0);
+      let buffer: AudioBuffer;
+      if (data.isRawPcm) {
+        // Older TTS models returned bare PCM samples with no container.
+        const pcm16 = new Int16Array(bytes.buffer);
+        const float32 = new Float32Array(pcm16.length);
+        for (let i = 0; i < pcm16.length; i++) float32[i] = pcm16[i] / 32768;
+        const sampleRate: number = data.sampleRate || 24000;
+        buffer = audioCtx.createBuffer(1, float32.length, sampleRate);
+        buffer.copyToChannel(float32, 0);
+      } else {
+        // Current model returns a proper WAV file — let the browser do the
+        // decoding instead of hand-rolling it.
+        buffer = await audioCtx.decodeAudioData(bytes.buffer);
+      }
 
       const source = audioCtx.createBufferSource();
       source.buffer = buffer;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const TTS_MODEL = process.env.GEMINI_TTS_MODEL || "gemini-2.5-flash-preview-tts";
+const TTS_MODEL = process.env.GEMINI_TTS_MODEL || "gemini-3.8-flash-tts";
 // Prebuilt Gemini voices worth trying for a friendly male tone:
 // "Puck" (upbeat), "Charon" (deep/informative), "Orus" (firm), "Fenrir" (excitable).
 const TTS_VOICE = process.env.GEMINI_TTS_VOICE || "Puck";
@@ -57,7 +57,12 @@ export async function POST(req: NextRequest) {
     const rateMatch = mimeType.match(/rate=(\d+)/);
     const sampleRate = rateMatch ? parseInt(rateMatch[1], 10) : 24000;
 
-    return NextResponse.json({ audio: audioB64, sampleRate });
+    // Newer TTS models return a proper WAV container (mimeType "audio/wav"),
+    // which decodeAudioData can handle directly; older ones returned raw
+    // PCM samples with no container, needing the manual path on the client.
+    const isRawPcm = mimeType.startsWith("audio/L16");
+
+    return NextResponse.json({ audio: audioB64, sampleRate, isRawPcm });
   } catch {
     return NextResponse.json({ error: "network_error" }, { status: 502 });
   }

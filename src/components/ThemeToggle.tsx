@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PiSunFill, PiMoonFill } from "react-icons/pi";
 import { useTheme } from "@/context/ThemeContext";
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ bare = false }: { bare?: boolean }) {
   const { theme, toggleTheme } = useTheme();
   const isDay = theme === "day";
 
@@ -14,7 +14,11 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={isDay ? "Switch to night mode" : "Switch to day mode"}
       data-cursor={isDay ? "Go dark" : "Go light"}
-      className="relative w-9 h-9 rounded-full border flex items-center justify-center transition-colors bg-fg/[0.04] border-fg/10 hover:border-fg/20 overflow-hidden"
+      className={`relative rounded-full flex items-center justify-center transition-colors overflow-hidden ${
+        bare
+          ? "w-8 h-8 hover:bg-fg/10"
+          : "w-9 h-9 border bg-fg/[0.04] border-fg/10 hover:border-fg/20"
+      }`}
     >
       <AnimatePresence mode="wait" initial={false}>
         {isDay ? (

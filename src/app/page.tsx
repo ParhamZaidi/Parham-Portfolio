@@ -37,10 +37,16 @@ export default function Home() {
         <h1
           id="page-heading"
           data-cursor="This is me"
-          className="font-display text-5xl md:text-7xl lg:text-[76px] font-bold tracking-tight text-fg inline-flex items-center gap-4"
+          className="relative inline-block font-display text-5xl md:text-7xl lg:text-[76px] font-bold tracking-tight text-fg"
         >
           Parham Ailia
-          <NameStarBurst />
+          {/* Positioned off the text itself rather than inline with it, so
+              the star/photo never shift where the name visually centers —
+              it used to pull "Parham Ailia" noticeably left, worse on
+              mobile where there's less room either side. */}
+          <span className="absolute left-full top-1/2 -translate-y-1/2 ml-2 md:ml-4">
+            <NameStarBurst />
+          </span>
         </h1>
         <p className="text-[15px] font-light text-fg/35 mt-2.5 tracking-[2px]">
           Product Designer

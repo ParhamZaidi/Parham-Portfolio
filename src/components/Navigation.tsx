@@ -71,13 +71,14 @@ export default function Navigation({ showBack = false }: NavigationProps) {
         />
       </Link>
 
-      {/* Mobile left side: optional back link + hamburger menu */}
-      <div className="flex md:hidden items-center gap-2">
+      {/* Mobile left side: optional back link + hamburger menu, sharing
+          one translucent pill container */}
+      <div className="flex md:hidden items-center gap-1 p-1 rounded-full bg-fg/[0.04] border border-fg/10 backdrop-blur-xl">
         {showBack && (
           <Link
             href="/"
             aria-label="Back to home"
-            className="w-9 h-9 rounded-full border flex items-center justify-center bg-fg/[0.03] border-fg/10 text-fg/70"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-fg/70 transition-colors hover:bg-fg/10"
           >
             <svg
               width="14"
@@ -98,7 +99,7 @@ export default function Navigation({ showBack = false }: NavigationProps) {
           onClick={() => setMenuOpen((v) => !v)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
-          className="w-9 h-9 rounded-full border flex items-center justify-center bg-fg/[0.03] border-fg/10 text-fg/70"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-fg/70 transition-colors hover:bg-fg/10"
         >
           {menuOpen ? <FaTimes size={14} /> : <FaBars size={14} />}
         </button>
@@ -167,12 +168,13 @@ export default function Navigation({ showBack = false }: NavigationProps) {
         <ThemeToggle />
       </div>
 
-      {/* Mobile right side: dock icons inline + theme toggle */}
-      <div className="flex md:hidden items-center gap-1.5">
+      {/* Mobile right side: dock icons + theme toggle, sharing one
+          translucent pill container instead of each having its own */}
+      <div className="flex md:hidden items-center gap-1 p-1 rounded-full bg-fg/[0.04] border border-fg/10 backdrop-blur-xl">
         <Link
           href="/pamiot"
           aria-label="Pamiot — ask about Parham"
-          className="w-8 h-8 rounded-full border overflow-hidden flex items-center justify-center bg-[#FACC15]/10 border-[#FACC15]/40"
+          className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center transition-colors hover:bg-[#FACC15]/10"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/pamiot/head-icon.png" alt="" className="w-[85%] h-[85%] object-contain" />
@@ -181,7 +183,7 @@ export default function Navigation({ showBack = false }: NavigationProps) {
           type="button"
           onClick={openLetter}
           aria-label="Message me"
-          className="w-8 h-8 rounded-full border flex items-center justify-center bg-fg/[0.03] border-fg/10 text-fg/60"
+          className="w-8 h-8 rounded-full flex items-center justify-center text-fg/60 transition-colors hover:bg-fg/10"
         >
           <FaEnvelope size={12} />
         </button>
@@ -190,12 +192,12 @@ export default function Navigation({ showBack = false }: NavigationProps) {
             key={id}
             href={href}
             aria-label={label}
-            className="w-8 h-8 rounded-full border flex items-center justify-center bg-fg/[0.03] border-fg/10 text-fg/60"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-fg/60 transition-colors hover:bg-fg/10"
           >
             <Icon size={12} />
           </Link>
         ))}
-        <ThemeToggle />
+        <ThemeToggle bare />
       </div>
     </motion.nav>
   );

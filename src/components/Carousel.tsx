@@ -58,9 +58,13 @@ export default function Carousel() {
 
   return (
     <section id="work" className="relative z-10 mt-14 md:mt-16 pb-16">
-      {/* Edge fades */}
-      <div className="absolute left-0 top-0 w-24 md:w-32 h-full bg-gradient-to-r from-bg to-transparent z-[15] pointer-events-none" />
-      <div className="absolute right-0 top-0 w-24 md:w-32 h-full bg-gradient-to-l from-bg to-transparent z-[15] pointer-events-none" />
+      {/* Edge fades — explicit height matching the card area below, since
+          h-full doesn't resolve against this section (its own height is
+          just content-driven, not an explicit value), which was collapsing
+          these to a thin sliver and showing up as a stray line at the top
+          of the carousel. */}
+      <div className="absolute left-0 top-0 w-24 md:w-32 h-[480px] md:h-[460px] bg-gradient-to-r from-bg to-transparent z-[15] pointer-events-none" />
+      <div className="absolute right-0 top-0 w-24 md:w-32 h-[480px] md:h-[460px] bg-gradient-to-l from-bg to-transparent z-[15] pointer-events-none" />
 
       {/* Cards */}
       <motion.div

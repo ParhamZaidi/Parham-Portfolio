@@ -27,7 +27,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["Playfair Display", "Georgia", "serif"],
+        display: ["Fraunces", "Georgia", "serif"],
         body: ["DM Sans", "system-ui", "sans-serif"],
       },
       animation: {

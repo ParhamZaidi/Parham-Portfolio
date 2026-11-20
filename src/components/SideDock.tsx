@@ -1,13 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { FaEnvelope, FaLinkedin, FaGithub, FaArrowUp } from "react-icons/fa";
-import LetterModal from "@/components/LetterModal";
-
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+import { FaEnvelope, FaLinkedin, FaGithub } from "react-icons/fa";
+import { useLetterModal } from "@/context/LetterModalContext";
 
 const items = [
   { id: "linkedin", icon: FaLinkedin, label: "LinkedIn", href: "#", cursor: "This is my LinkedIn" },
@@ -15,22 +10,19 @@ const items = [
 ];
 
 export default function SideDock() {
-  const [letterOpen, setLetterOpen] = useState(false);
+  const { openLetter } = useLetterModal();
 
   return (
-    // Anchored a fixed distance below the nav (top-28) instead of
-    // vertically centered (top-1/2) — centering could push this dock up
-    // into the nav bar on shorter viewports, where its higher z-index
-    // made it win clicks meant for the logo/back link (confirmed: it was
-    // silently sending "go home" clicks to /pamiot instead). A fixed top
-    // offset below the nav's own height can't overlap it regardless of
-    // viewport height.
-    <div className="fixed left-4 md:left-6 top-28 z-[9999] flex flex-col gap-3">
+    // Desktop-only — on mobile these same icons move into the top nav bar
+    // instead (Navigation.tsx), since a vertical side dock doesn't fit a
+    // narrow viewport well. The icons share one translucent pill-shaped
+    // container instead of each having its own circular background.
+    <div className="hidden md:flex fixed left-4 md:left-6 top-1/2 -translate-y-1/2 z-[9999] flex-col items-center gap-1 p-2 rounded-full bg-fg/[0.04] border border-fg/10 backdrop-blur-xl">
       <Link
         href="/pamiot"
         aria-label="Pamiot — ask about Parham"
         data-cursor="Pamiot — ask about me"
-        className="w-11 h-11 rounded-full border overflow-hidden flex items-center justify-center backdrop-blur-xl transition-all bg-[#FACC15]/10 border-[#FACC15]/40 hover:bg-[#FACC15]/20 hover:border-[#FACC15]/60"
+        className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-colors hover:bg-[#FACC15]/10"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -40,16 +32,16 @@ export default function SideDock() {
         />
       </Link>
 
-      <div className="h-px bg-fg/10 mx-1" />
+      <div className="h-px w-5 bg-fg/10 my-1" />
 
       <button
         type="button"
         data-cursor="Message me"
-        onClick={() => setLetterOpen(true)}
+        onClick={openLetter}
         aria-label="Message me"
-        className="w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all bg-fg/[0.03] border-fg/10 text-fg/50 hover:text-fg hover:border-fg/20"
+        className="w-9 h-9 rounded-full flex items-center justify-center transition-colors text-fg/50 hover:text-fg hover:bg-fg/10"
       >
-        <FaEnvelope size={16} />
+        <FaEnvelope size={15} />
       </button>
 
       {items.map(({ id, icon: Icon, label, href, cursor }) => (
@@ -58,23 +50,11 @@ export default function SideDock() {
           href={href}
           aria-label={label}
           data-cursor={cursor}
-          className="w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all bg-fg/[0.03] border-fg/10 text-fg/50 hover:text-fg hover:border-fg/20"
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-colors text-fg/50 hover:text-fg hover:bg-fg/10"
         >
-          <Icon size={16} />
+          <Icon size={15} />
         </Link>
       ))}
-      <div className="h-px bg-fg/10 mx-1" />
-      <button
-        type="button"
-        data-cursor="Back to top"
-        onClick={scrollToTop}
-        aria-label="Back to top"
-        className="w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all bg-fg/[0.03] border-fg/10 text-fg/50 hover:text-fg hover:border-fg/20"
-      >
-        <FaArrowUp size={14} />
-      </button>
-
-      <LetterModal open={letterOpen} onClose={() => setLetterOpen(false)} />
     </div>
   );
 }

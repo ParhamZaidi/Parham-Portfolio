@@ -5,6 +5,7 @@ import IntroLoader from "@/components/IntroLoader";
 import SideDock from "@/components/SideDock";
 import CustomCursor from "@/components/CustomCursor";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { LetterModalProvider } from "@/context/LetterModalContext";
 
 export const metadata: Metadata = {
   title: "Parham Ailia — Product Designer",
@@ -37,10 +38,12 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
-          <PlaygroundTools>{children}</PlaygroundTools>
-          <IntroLoader />
-          <SideDock />
-          <CustomCursor />
+          <LetterModalProvider>
+            <PlaygroundTools>{children}</PlaygroundTools>
+            <IntroLoader />
+            <SideDock />
+            <CustomCursor />
+          </LetterModalProvider>
         </ThemeProvider>
       </body>
     </html>

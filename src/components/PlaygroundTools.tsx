@@ -305,11 +305,12 @@ export default function PlaygroundTools({
         )}
       </div>
 
-      {/* Anchored below the nav (top-28) instead of vertically centered —
-          see the matching comment in SideDock.tsx for why centering was
-          wrong on shorter viewports. */}
-      <div className="fixed right-4 md:right-6 top-28 z-[9999] flex flex-row-reverse items-center gap-3">
-        <div className="flex flex-col gap-3">
+      {/* Desktop-only — the brush/color/zoom playground doesn't fit a
+          mobile viewport well, so it's dropped entirely below md rather
+          than squeezed in. Icons share one translucent pill container
+          instead of each having its own circular background. */}
+      <div className="hidden md:flex fixed right-4 md:right-6 top-1/2 -translate-y-1/2 z-[9999] flex-row-reverse items-center gap-3">
+        <div className="flex flex-col items-center gap-1 p-2 rounded-full bg-fg/[0.04] border border-fg/10 backdrop-blur-xl">
           {TOOLS.map(({ id, icon: Icon, label, cursor }) => {
             const isActive = activeTool === id;
             return (
@@ -319,32 +320,30 @@ export default function PlaygroundTools({
                 aria-label={isActive ? `Deselect ${label}` : `Select ${label}`}
                 aria-pressed={isActive}
                 data-cursor={cursor}
-                className={`w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all ${
-                  isActive
-                    ? "bg-fg/[0.12] border-fg/30 text-fg"
-                    : "bg-fg/[0.03] border-fg/10 text-fg/50 hover:text-fg hover:border-fg/20"
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+                  isActive ? "bg-fg/[0.12] text-fg" : "text-fg/50 hover:text-fg hover:bg-fg/10"
                 }`}
               >
-                <Icon size={16} />
+                <Icon size={15} />
               </button>
             );
           })}
           {activeTool && (
             <>
-              <div className="h-px bg-fg/10 mx-1" />
+              <div className="h-px w-5 bg-fg/10 my-1" />
               <button
                 onClick={handleLogoReset}
                 aria-label="Reset tools and go home"
-                className="w-11 h-11 rounded-full border flex items-center justify-center backdrop-blur-xl transition-all bg-fg/[0.03] border-fg/10 text-fg/50 hover:text-fg hover:border-fg/20"
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-colors text-fg/50 hover:text-fg hover:bg-fg/10"
               >
-                <FaHome size={16} />
+                <FaHome size={15} />
               </button>
             </>
           )}
         </div>
 
         {showColorPicker && (
-          <div className="flex flex-col gap-2 p-2 rounded-2xl bg-fg/[0.05] border border-fg/10 backdrop-blur-xl">
+          <div className="flex flex-col gap-2 p-2 rounded-full bg-fg/[0.04] border border-fg/10 backdrop-blur-xl">
             {PALETTE.map((color) => (
               <button
                 key={color}
